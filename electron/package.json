@@ -1,0 +1,17 @@
+{
+  "name": "boilerplate-electron",
+  "version": "1.0.0",
+  "description": "Electron Boilerplate Web Kiosk App",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "https://github.com/nbartzokas/boilerplate-electron",
+  "keywords": [
+    "Electron",
+    "boilerplate",
+    "kiosk"
+  ],
+  "author": "GitHub",
+  "license": "CC0-1.0"
+}

@@ -1,0 +1,23 @@
+{
+  "name": "boilerplate-electron",
+  "version": "1.0.0",
+  "description": "Electron Boilerplate Web Kiosk App",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "buildWin": "electron-packager electron/ boilerplate-electron --platform=win32 --arch=x64 --out=build/win/1/2 --overwrite",
+    "buildMac": "electron-packager electron/ boilerplate-electron --platform=darwin --arch=x64 --out=build/mac --overwrite"
+  },
+  "repository": "https://github.com/nbartzokas/boilerplate-electron",
+  "keywords": [
+    "Electron",
+    "boilerplate",
+    "kiosk"
+  ],
+  "author": "GitHub",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "^1.4.1",
+    "electron-packager": "^8.3.0"
+  }
+}

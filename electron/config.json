@@ -1,0 +1,39 @@
+{
+
+  "url": "index.html",
+
+  "debug": true,
+
+  "browserWindow": {
+    "x":0,
+    "y":0,
+    "width": 1280,
+    "height": 720,
+    "resizable": false,
+    "moveable": false,
+    "minimizable": false,
+    "maximizable": false,
+    "closable": false,
+    "kiosk": false,
+    "alwaysOnTop": true,
+    "webPreferences": {
+      "nodeIntegration": false
+    }
+  },
+
+  "launchDelay": 0,
+  "kioskDelay": 0,
+  "reloadTimeout": 3000,
+  "resizeTimeout": 3000,
+  "bounds":{
+    "x":0,
+    "y":0,
+    "width": 1280,
+    "height": 720
+  },
+
+  "commandLineSwitches": {
+    "ignore-gpu-blacklist":"true"
+  }
+
+}
