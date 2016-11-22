@@ -1,6 +1,6 @@
 # Boilerplate Electron Web App
 
-Electron offers a clean way of packaging up a web-based kiosk app as a fullscreen executable. This boilerplate app launches a fullscreen instance of Chromium, loads http://www.google.com, opens dev tools, and a bunch more. 
+This is a modification of [electron-quick-start](https://github.com/electron/electron-quick-start). `main.js` has been preloaded with some features frequently needed for always-on kiosk applications (error recovery, guaranteed execution order of server-client startup, lockdown). These features are exposed for customization in `config.json`.
 
 ## Initialize
 
