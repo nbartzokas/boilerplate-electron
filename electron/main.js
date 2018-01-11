@@ -1,12 +1,11 @@
 'use strict';
 
 const electron = require('electron');
+const express = require('express');
 
-// Module to control application life.
 const app = electron.app;
-
-// Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
+const globalShortcut = electron.globalShortcut;
 
 const config = require('./config.json');
 const browserWindowSettings = config.browserWindow || { fullscreen: true };
@@ -23,7 +22,7 @@ if ( config.commandLineSwitches){
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow, webContents, server;
+let mainWindow, webContents;
 
 function init(){
   startServer().then(startClient);
@@ -31,10 +30,8 @@ function init(){
 
 function startServer() {
   return new Promise(function(resolve,reject){
-
     // ... write code to start server then call resolve() 
     resolve();
-
   });
 }
 
@@ -43,11 +40,9 @@ function startClient(){
     // workaround ala https://github.com/atom/electron/issues/1054#issuecomment-173368614
     setTimeout(function(){
       createWindow();
-      resolve();
     }, config.launchDelay);
   }else{
     createWindow();
-    resolve();
   }
 }
 
@@ -64,15 +59,32 @@ function createWindow () {
   mainWindow.on('unresponsive',     function(e){ reload('window unresponsive',e); });
 
   webContents = mainWindow.webContents;
+  webContents.on('did-finish-load', function (e) {
+    // Open the DevTools.
+    if (config.debug) webContents.openDevTools();
+  });
+
+  globalShortcut.register('CommandOrControl+Shift+D', () => {
+    console.log('Debug pressed');
+    config.debug = !config.debug;
+    if (config.debug){
+      webContents.openDevTools();
+    }else{
+      webContents.closeDevTools();
+    }
+  });
+
   webContents.on('did-fail-load',   function(e){ reload('contents did-fail-load',e); });
   webContents.on('crashed',         function(e){ reload('contents crashed',e); });
   webContents.on('plugin-crashed',  function(e){ reload('contents plugin-crashed',e); });
 
   // and load the index.html of the app.
-  mainWindow.loadURL( appUrl );
+  webContents.session.clearCache(function(){
+    mainWindow.loadURL( appUrl, { extraHeaders: 'pragma: no-cache\n' } );
+  });
 
-  // Open the DevTools.
-  if (config.debug) mainWindow.webContents.openDevTools();
+  // lock zoom
+  if (!config.zoom) electron.webFrame.setZoomLevelLimits(1, 1);
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function() {
@@ -94,7 +106,11 @@ function createWindow () {
 }
 
 function reload(eventName, eventObject) {
-  setTimeout( webContents.reload, config.reloadTimeout || 3000 );
+  setTimeout( function(){
+    if (mainWindow) {
+      mainWindow.loadURL( appUrl, { extraHeaders: 'pragma: no-cache\n' } );
+    }
+  }, config.reloadTimeout || 3000 );
 }
 
 function resize(bounds){
@@ -110,11 +126,7 @@ app.on('ready', init);
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
-  // On OS X it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+  app.quit();
 });
 
 app.on('activate', function () {

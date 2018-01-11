@@ -1,0 +1,9 @@
+body {
+  margin: 0;
+  overflow: hidden;
+}
+
+/* dat gui */
+div.dg.ac {
+	z-index:999999;
+}

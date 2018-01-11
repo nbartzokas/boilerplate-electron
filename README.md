@@ -2,7 +2,7 @@
 
 This is a modification of [electron-quick-start](https://github.com/electron/electron-quick-start). `main.js` has been preloaded with some features frequently needed for always-on kiosk applications (error recovery, guaranteed execution order of server-client startup, lockdown). These features are exposed for customization in `config.json`.
 
-## Initialize
+## Setup
 
 To initialize
 
@@ -11,6 +11,29 @@ To initialize
 If you need to build for the Windows platform from a Mac computer
 
 	brew install wine
+
+In `package.json`:
+
+- replace `$APP_NAME` in "name", "build:win", "build:mac", and "build:copyClient" with a lower-case, hyphenated app name
+- replace `$APP_DESCRIPTION` in "description"
+- replace `$USER` and `$TARGET_MACHINE` in "deploy" (optional if using ssh to deploy on local network) 
+- replace `$SERVER`, `$STAGING_FOLDER`, and `$DEPLOY_FOLDER` in "aws:upload", "aws:config", and "aws:move" (option if deploying to aws)
+
+In `app/sw.js`:
+
+- replace $APP_NAME
+
+In `app/js/app.js`:
+
+- add assets you want the service worker to cache to the assets array
+
+In `app/index.html`:
+
+- replace $APP_NAME
+
+In `config.json`:
+
+- replace "url" with the url of the app, whether form local filesystem or remote via http(s)
 
 ## Build
 
@@ -53,6 +76,15 @@ To load with dev tools open:
 	{
 		"url": "http://google.com",
 		"debug": true
+	}
+
+### `zoom`
+
+By default, zoom is disabled. To re-enable:
+	
+	{
+		"url": "http://google.com",
+		"zoom": true
 	}
 
 ### `browserWindow`

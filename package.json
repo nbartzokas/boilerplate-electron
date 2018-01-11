@@ -1,23 +1,42 @@
 {
-  "name": "boilerplate-electron",
-  "version": "1.0.0",
-  "description": "Electron Boilerplate Web Kiosk App",
-  "main": "main.js",
+  "name": "$APP_NAME",
+  "version": "0.0.1",
+  "description": "$APP_DESCRIPTION",
+  "main": "index.html",
   "scripts": {
-    "start": "electron .",
-    "buildWin": "electron-packager electron/ boilerplate-electron --platform=win32 --arch=x64 --out=build/win/1/2 --overwrite",
-    "buildMac": "electron-packager electron/ boilerplate-electron --platform=darwin --arch=x64 --out=build/mac --overwrite"
+    "lint": "jshint ./app ./server ./test --exclude ./app/lib ",
+    "start": "npm run start:server | npm run start:front | npm run start:browser | npm run start:msg",
+    "start:front": "http-server -p8080 ./app --cors --ssl",
+    "start:server": "sudo node server/server.js",
+    "start:browser": "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --disable-web-security --ignore-certificate-errors --unsafely-treat-insecure-origin-as-secure=https://localhost:8080 --user-data-dir=/tmp/foo https://localhost:8080",
+    "start:electron": "npm run start:server | electron electron | npm run start:msg",
+    "start:msg": "echo \"Done.\"",
+    "build": "npm run build:npm && npm run build:win && npm run build:copyClient",
+    "build:npm": "(cd electron && npm install)",
+    "build:win": "electron-packager electron/ $APP_NAME --platform=win32 --arch=x64 --out=build/win/ --overwrite ",
+    "build:mac": "npm run build:npm && electron-packager electron/ $APP_NAME --platform=darwin --arch=x64 --out=build/mac/ --overwrite && rsync -avz app/ build/mac/$APP_NAME-darwin-x64/$APP_NAME.app/Contents/Resources/app/",
+    "build:copyClient": "rsync -avz app/ build/win/$APP_NAME-win32-x64/resources/app/",
+    "deploy": "rsync -avz ./build/win/ $USER@$TARGET_MACHINE:~/.",
+    "aws": "npm run aws:upload && npm run aws:config && npm run aws:move",
+    "aws:upload": "rsync -avz --delete app/ $SERVER:~/$STAGING_FOLDER",
+    "aws:config": "scp app/js/config.aws.js $SERVER:~/$STAGING_FOLDER/js/config.js",
+    "aws:move": "ssh $SERVER 'sudo rsync -avz --delete ~/$STAGING_FOLDER/ /var/www/$DEPLOY_FOLDER/'",
+    "test": "mocha"
   },
-  "repository": "https://github.com/nbartzokas/boilerplate-electron",
-  "keywords": [
-    "Electron",
-    "boilerplate",
-    "kiosk"
-  ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
+  "author": "@nbartzokas",
+  "license": "",
+  "dependencies": {
+    "express": "^4.15.2",
+    "request": "^2.81.0"
+  },
   "devDependencies": {
-    "electron": "^1.4.1",
-    "electron-packager": "^8.3.0"
+    "electron": "^1.6.11",
+    "electron-packager": "^8.7.2",
+    "http-server": "^0.9.0",
+    "jshint": "^2.9.4",
+    "mocha": "^3.2.0"
+  },
+  "jshintConfig": {
+    "esversion": 6
   }
 }

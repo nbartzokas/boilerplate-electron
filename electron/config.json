@@ -1,39 +1,28 @@
 {
 
-  "url": "index.html",
+  "url": "https://localhost:8080/",
 
-  "debug": true,
+  "debug": false,
+  
+  "zoom": false,
 
   "browserWindow": {
-    "x":0,
-    "y":0,
-    "width": 1280,
-    "height": 720,
-    "resizable": false,
-    "moveable": false,
-    "minimizable": false,
-    "maximizable": false,
-    "closable": false,
-    "kiosk": false,
-    "alwaysOnTop": true,
+    "kiosk": true,
     "webPreferences": {
       "nodeIntegration": false
     }
   },
 
-  "launchDelay": 0,
-  "kioskDelay": 0,
-  "reloadTimeout": 3000,
-  "resizeTimeout": 3000,
-  "bounds":{
-    "x":0,
-    "y":0,
-    "width": 1280,
-    "height": 720
-  },
-
   "commandLineSwitches": {
-    "ignore-gpu-blacklist":"true"
+    "incognito":"true",
+    "ignore-gpu-blacklist":"true",
+    "high-dpi-support":"1",
+    "force-device-scale-factor":"1",
+    "overscroll-history-navigation":"0",
+    "start-fullscreen":"true",
+    "disable-pinch":"true",
+    "disable-touch-feedback":"true",
+    "disable-touch-drag-drop":"true"
   }
 
 }
