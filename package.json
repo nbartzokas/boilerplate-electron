@@ -1,7 +1,7 @@
 {
-  "name": "$APP_NAME",
+  "name": "APP_NAME",
   "version": "0.0.1",
-  "description": "$APP_DESCRIPTION",
+  "description": "APP_DESCRIPTION",
   "main": "index.html",
   "scripts": {
     "lint": "jshint ./app ./server ./test --exclude ./app/lib ",
@@ -13,9 +13,9 @@
     "start:msg": "echo \"Done.\"",
     "build": "npm run build:npm && npm run build:win && npm run build:copyClient",
     "build:npm": "(cd electron && npm install)",
-    "build:win": "electron-packager electron/ $APP_NAME --platform=win32 --arch=x64 --out=build/win/ --overwrite ",
-    "build:mac": "npm run build:npm && electron-packager electron/ $APP_NAME --platform=darwin --arch=x64 --out=build/mac/ --overwrite && rsync -avz app/ build/mac/$APP_NAME-darwin-x64/$APP_NAME.app/Contents/Resources/app/",
-    "build:copyClient": "rsync -avz app/ build/win/$APP_NAME-win32-x64/resources/app/",
+    "build:win": "electron-packager electron/ APP_NAME --platform=win32 --arch=x64 --out=build/win/ --overwrite ",
+    "build:mac": "npm run build:npm && electron-packager electron/ APP_NAME --platform=darwin --arch=x64 --out=build/mac/ --overwrite && rsync -avz app/ build/mac/APP_NAME-darwin-x64/APP_NAME.app/Contents/Resources/app/",
+    "build:copyClient": "rsync -avz app/ build/win/APP_NAME-win32-x64/resources/app/",
     "deploy": "rsync -avz ./build/win/ $USER@$TARGET_MACHINE:~/.",
     "aws": "npm run aws:upload && npm run aws:config && npm run aws:move",
     "aws:upload": "rsync -avz --delete app/ $SERVER:~/$STAGING_FOLDER",

@@ -14,8 +14,8 @@ If you need to build for the Windows platform from a Mac computer
 
 In `package.json`:
 
-- replace `$APP_NAME` in "name", "build:win", "build:mac", and "build:copyClient" with a lower-case, hyphenated app name
-- replace `$APP_DESCRIPTION` in "description"
+- replace `APP_NAME` in "name", "build:win", "build:mac", and "build:copyClient" with a lower-case, hyphenated app name
+- replace `APP_DESCRIPTION` in "description"
 - replace `$USER` and `$TARGET_MACHINE` in "deploy" (optional if using ssh to deploy on local network) 
 - replace `$SERVER`, `$STAGING_FOLDER`, and `$DEPLOY_FOLDER` in "aws:upload", "aws:config", and "aws:move" (option if deploying to aws)
 
@@ -34,6 +34,10 @@ In `app/index.html`:
 In `config.json`:
 
 - replace "url" with the url of the app, whether form local filesystem or remote via http(s)
+
+In `electron/package.json`:
+
+- replace `APP_NAME` in "name" and "productName"
 
 ## Build
 

@@ -1,6 +1,6 @@
 {
-  "name": "facebook-timeline-electron",
-  "productName": "facebook-timeline-electron",
+  "name": "APP_NAME",
+  "productName": "APP_NAME",
   "main": "main.js",
   "dependencies": {
     "express": "^4.15.2",
