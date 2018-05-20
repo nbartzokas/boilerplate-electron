@@ -1,12 +1,7 @@
 'use strict';
 
-const electron = require('electron');
+const { app, BrowserWindow, globalShortcut } = require('electron');
 const express = require('express');
-
-const app = electron.app;
-const BrowserWindow = electron.BrowserWindow;
-const globalShortcut = electron.globalShortcut;
-
 const config = require('./config.json');
 const browserWindowSettings = config.browserWindow || { fullscreen: true };
 var appUrl = config.url || 'file://' + __dirname + '/index.html';
@@ -25,7 +20,9 @@ if ( config.commandLineSwitches){
 let mainWindow, webContents;
 
 function init(){
-  startServer().then(startClient);
+  startClient();
+  // ... or, if you need a server to start first, comment line above and uncomment line below
+  //startServer().then(startClient);
 }
 
 function startServer() {
@@ -82,9 +79,6 @@ function createWindow () {
   webContents.session.clearCache(function(){
     mainWindow.loadURL( appUrl, { extraHeaders: 'pragma: no-cache\n' } );
   });
-
-  // lock zoom
-  if (!config.zoom) electron.webFrame.setVisualZoomLevelLimits(1, 1);
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function() {

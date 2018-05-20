@@ -1,14 +1,16 @@
-var https = require('https');
-var request = require('request');
-var express  = require('express');
-var fs = require('fs');
+/* 
+ * example localhost server
+ */
 
-var key = fs.readFileSync( 'key.pem' );
-var cert = fs.readFileSync( 'cert.pem' );
+//var https = require('https');
+//var request = require('request');
+//var express  = require('express');
+//var fs = require('fs');
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; // Avoids DEPTH_ZERO_SELF_SIGNED_CERT error for self-signed certs
+//var key = fs.readFileSync( 'key.pem' );
+//var cert = fs.readFileSync( 'cert.pem' );
+//process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; // Avoids DEPTH_ZERO_SELF_SIGNED_CERT error for self-signed certs
 
-//// example localhost server
 // var frontendApp = express();
 // frontendApp.use(function(req,res) {
 //   request('https://localhost:8080/'+req.path).pipe(res);
