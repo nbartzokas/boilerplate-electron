@@ -84,7 +84,7 @@ function createWindow () {
   });
 
   // lock zoom
-  if (!config.zoom) electron.webFrame.setZoomLevelLimits(1, 1);
+  if (!config.zoom) electron.webFrame.setVisualZoomLevelLimits(1, 1);
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function() {
