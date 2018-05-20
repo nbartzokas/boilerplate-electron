@@ -3,11 +3,7 @@
 const { app, BrowserWindow, globalShortcut } = require('electron');
 const express = require('express');
 const config = require('./config.json');
-const browserWindowSettings = config.browserWindow || { fullscreen: true };
-var appUrl = config.url || 'file://' + __dirname + '/index.html';
-if (!/:\/\//.test(appUrl)){
-  appUrl = 'file://' + __dirname + '/' + appUrl;
-}
+const browserWindowSettings = config.windows || [{ fullscreen: true }];
 
 if ( config.commandLineSwitches){
   Object.keys( config.commandLineSwitches ).forEach(function(s){
@@ -17,7 +13,7 @@ if ( config.commandLineSwitches){
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow, webContents;
+let windows=[];
 
 function init(){
   startClient();
@@ -39,41 +35,45 @@ function startClient(){
       createWindow();
     }, config.launchDelay);
   }else{
-    createWindow();
+    browserWindowSettings.forEach(createWindow);
   }
 }
 
-function createWindow () {
+function createWindow (browserWindowSetting) {
 
-  // workaround ala https://github.com/atom/electron/issues/1054#issuecomment-173368614
-  var kiosk = browserWindowSettings.kiosk;
-  if (config.kioskDelay && kiosk) {
-    browserWindowSettings.kiosk = false;
+  var appUrl = browserWindowSetting.url || 'file://' + __dirname + '/index.html';
+  if (!/:\/\//.test(appUrl)){
+    appUrl = 'file://' + __dirname + '/' + appUrl;
   }
 
-  // Create the browser window.
-  mainWindow = new BrowserWindow( browserWindowSettings );
-  mainWindow.on('unresponsive',     function(e){ reload('window unresponsive',e); });
+  // workaround ala https://github.com/atom/electron/issues/1054#issuecomment-173368614
+  var kiosk = browserWindowSetting.kiosk;
+  if (browserWindowSetting.kioskDelay && kiosk) {
+    browserWindowSetting.kiosk = false;
+  }
 
-  webContents = mainWindow.webContents;
+  var mainWindow = new BrowserWindow( browserWindowSetting.browserWindow );
+  mainWindow.on('unresponsive',     function(e){ reload(mainWindow, appUrl, 'window unresponsive',e); });
+
+  var webContents = mainWindow.webContents;
   webContents.on('did-finish-load', function (e) {
     // Open the DevTools.
-    if (config.debug) webContents.openDevTools();
+    if (browserWindowSetting.debug) webContents.openDevTools();
   });
 
   globalShortcut.register('CommandOrControl+Shift+D', () => {
     console.log('Debug pressed');
-    config.debug = !config.debug;
-    if (config.debug){
+    browserWindowSetting.debug = !browserWindowSetting.debug;
+    if (browserWindowSetting.debug){
       webContents.openDevTools();
     }else{
       webContents.closeDevTools();
     }
   });
 
-  webContents.on('did-fail-load',   function(e){ reload('contents did-fail-load',e); });
-  webContents.on('crashed',         function(e){ reload('contents crashed',e); });
-  webContents.on('plugin-crashed',  function(e){ reload('contents plugin-crashed',e); });
+  webContents.on('did-fail-load',   function(e){ reload(mainWindow, appUrl, 'contents did-fail-load',e); });
+  webContents.on('crashed',         function(e){ reload(mainWindow, appUrl, 'contents crashed',e); });
+  webContents.on('plugin-crashed',  function(e){ reload(mainWindow, appUrl, 'contents plugin-crashed',e); });
 
   // and load the index.html of the app.
   webContents.session.clearCache(function(){
@@ -89,17 +89,19 @@ function createWindow () {
   });
 
   // workaround ala https://github.com/atom/electron/issues/1054#issuecomment-173368614
-  if (config.kioskDelay && kiosk){
+  if (browserWindowSetting.kioskDelay && kiosk){
     setTimeout(function(){
       mainWindow.setKiosk(true);
-    }, config.kioskDelay);
+    }, browserWindowSetting.kioskDelay);
   }
 
-  if (config.bounds){ resize(); }
+  if (browserWindowSetting.bounds){ resize( mainWindow, browserWindowSetting.bounds, browserWindowSetting.resizeTimeout ); }
+
+  windows.push(mainWindow);
 
 }
 
-function reload(eventName, eventObject) {
+function reload(mainWindow, appUrl, eventName, eventObject) {
   setTimeout( function(){
     if (mainWindow) {
       mainWindow.loadURL( appUrl, { extraHeaders: 'pragma: no-cache\n' } );
@@ -107,11 +109,11 @@ function reload(eventName, eventObject) {
   }, config.reloadTimeout || 3000 );
 }
 
-function resize(bounds){
-  mainWindow.setBounds(config.bounds);
+function resize(mainWindow,bounds,resizeTimeout){
+  mainWindow.setBounds(bounds);
   setInterval( function(){
-    mainWindow.setBounds(config.bounds);
-  }, config.resizeTimeout || 3000 );
+    mainWindow.setBounds(bounds);
+  }, resizeTimeout || 3000 );
 }
 
 // This method will be called when Electron has finished
@@ -121,12 +123,4 @@ app.on('ready', init);
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
   app.quit();
-});
-
-app.on('activate', function () {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) {
-    createWindow();
-  }
 });

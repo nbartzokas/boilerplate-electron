@@ -1,17 +1,17 @@
 {
 
-  "url": "https://localhost:8080/",
-
-  "debug": false,
-  
-  "zoom": false,
-
-  "browserWindow": {
-    "kiosk": true,
-    "webPreferences": {
-      "nodeIntegration": false
+  "windows": [
+    {
+      "url": "http://localhost:8080",
+      "debug": true,
+      "browserWindow": {
+        "kiosk": true,
+        "webPreferences": {
+          "nodeIntegration": false
+        }
+      }
     }
-  },
+  ],
 
   "commandLineSwitches": {
     "incognito":"true",
