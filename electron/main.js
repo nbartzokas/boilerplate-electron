@@ -32,7 +32,7 @@ function startClient(){
   if (config.launchDelay){
     // workaround ala https://github.com/atom/electron/issues/1054#issuecomment-173368614
     setTimeout(function(){
-      createWindow();
+      browserWindowSettings.forEach(createWindow);
     }, config.launchDelay);
   }else{
     browserWindowSettings.forEach(createWindow);
